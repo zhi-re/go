@@ -85,4 +85,6 @@ func downloadPicture(bigPicturehref string, c chan string) {
 	read, _ := os.Create(fileName)
 	read.Write(w)
 	c <- fileName
+	defer urlBody.Body.Close() // 结束关闭
+	defer read.Close()         // 结束关闭文件
 }
