@@ -8,7 +8,9 @@ import (
 )
 
 func main() {
-	r := gin.Default()
+	// r := gin.New() // 无中间件启动
+	r := gin.Default() // 默认启动方式，包含 Logger、Recovery 中间件
+
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
@@ -20,6 +22,7 @@ func main() {
 	// http://localhost:8080/user/cqeeee
 	r.GET("/user/:name", func(c *gin.Context) {
 		name := c.Param("name")
+		log.Println("get请求入参：" + name)
 		c.JSON(200, gin.H{
 			"name": name,
 		})
@@ -84,5 +87,36 @@ func main() {
 
 		c.String(http.StatusOK, fmt.Sprintf("%d files uploaded!", len(files)))
 	})
+
+	// 禁用控制台颜色
+	// gin.DisableConsoleColor()
+
+	// 创建记录日志的文件
+	// f, _ := os.Create("gin.log")
+	// gin.DefaultWriter = io.MultiWriter(f)
+
+	// 如果需要将日志同时写入文件和控制台，请使用以下代码
+	// gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+
+	// LoggerWithFormatter 中间件会将日志写入 gin.DefaultWriter
+	// By default gin.DefaultWriter = os.Stdout
+	//
+	// r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+	//
+	//	// 你的自定义格式
+	//	return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+	//		param.ClientIP,
+	//		param.TimeStamp.Format(time.RFC1123),
+	//		param.Method,
+	//		param.Path,
+	//		param.Request.Proto,
+	//		param.StatusCode,
+	//		param.Latency,
+	//		param.Request.UserAgent(),
+	//		param.ErrorMessage,
+	//	)
+	// }))
+	// r.Use(gin.Recovery())
+
 	r.Run(":8080")
 }
